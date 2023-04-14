@@ -1,0 +1,6 @@
+.ipynb_checkpoints
+.ckpt
+__pycache__
+.idea/
+.mp4
+./temp_img_save/
