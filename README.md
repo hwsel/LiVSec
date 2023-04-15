@@ -161,13 +161,13 @@ from it at the server end, and use `MP4Client` to watch the playback at the clie
 
 The code under `System` folder runs on the server-end, so you should do the following at the server end.
 
-1. Install `DashCast` (included in the `GPAC 0.8.1`). Find more versions about `GPAC 0.8.1` from [this page](https://gpac.wp.imt.fr/downloads/gpac-legacy-builds/).
+1. Install `DashCast` (included in the `GPAC 0.8.1`). Find more versions about `GPAC 0.8.1`, see [this page](https://gpac.wp.imt.fr/downloads/gpac-legacy-builds/).
    ```shell
    wget https://download.tsi.telecom-paristech.fr/gpac/legacy_builds/linux64/gpac/gpac_0.8.1-latest-legacy_amd64.deb
    sudo apt install ./gpac_0.8.1-latest-legacy_amd64.deb
    ```
 
-2. Install `Node.js`. We recommand use tools like `nvs` to easily install and manage `Node.js`.
+2. Install `Node.js`. We recommend using tools like `nvs` to easily install and manage `Node.js`.
    See [official documentation](https://github.com/jasongin/nvs) of `nvs` for more information.
    ```shell
    # install nvs
