@@ -29,6 +29,10 @@ REUSE_FREQ = 1
 
 FFMPEG_BIN = '/usr/bin/ffmpeg'
 
+DEFAULT_DASH, LOWLATENCY_DASH = range(2)
+DASH_MODE = LOWLATENCY_DASH
+DASH_PATH = '/home/tangbao/codes' + '/node-gpac-dash/livsec'
+
 DEFAULT_VIDEO = './John_3dts.mp4'
 
 input_command = [FFMPEG_BIN,
@@ -55,9 +59,15 @@ output_command = [FFMPEG_BIN,
 
 output_pipe = sp.Popen(output_command, stdin=sp.PIPE, stderr=sp.PIPE)
 
-dashcast_cmd = 'cd /home/tangbao/codes/vimeo-depth-player/assets/dash; \
+
+dashcast_cmd = f'cd {DASH_PATH}; \
                 DashCast -vf video4linux2 -v4l2f rawvideo -vfr 24 -vres 2048x2048 -v /dev/video0 -live -seg-dur 1000 \
                 -time-shift 600 -mpd manifest.mpd;'
+
+if DASH_MODE == LOWLATENCY_DASH:
+    dashcast_cmd = f'cd {DASH_PATH}; \
+                    DashCast -vf video4linux2 -vres 2048x2048 -vfr 24 -v /dev/video0 -live -low-delay -frag 200 -insert-utc \
+                    -seg-marker eods -min-buffer 0.2 -ast-offset -800 -pixf yuv420p;'
 
 
 def get_args():
@@ -125,7 +135,10 @@ if __name__ == '__main__':
     REUSE = False
     start_time = time.perf_counter_ns()
     i = 0
-    while i <= 120:  # 120 for default video
+    frame_no = 120
+    if MODE == STREAMING_MODE:
+        frame_no = 1400
+    while i <= frame_no:
         frame_start_time = time.perf_counter_ns()
         i = i + 1
         print('=========================' + str(i) + '=========================')

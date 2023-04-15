@@ -36,7 +36,7 @@ The paper can be found under the `paper` folder.
 
 ### Hardware requirements
 
-A workstation with GPU is required to train/infer the models, and run the system.
+A workstation with an Nvidia GPU is required to train/infer the models, and run the system.
 
 In our project, an Nvidia RTX A6000 GPU is used to evaluate the system.
 
@@ -79,7 +79,7 @@ If you prefer the command line, try the following commands to create a virtual e
     pip install lpips opencv-python==4.3.0.38
     ```
 
-5. Install `ffmpeg`.
+5. [For System] Install `ffmpeg`.
    ```shell
    sudo apt install ffmpeg
    ```
@@ -87,7 +87,7 @@ If you prefer the command line, try the following commands to create a virtual e
    path in your system by typing `which ffmpeg` in the terminal. If it is different from this path, please modify Line 30 of
    `main.py` under `System` folder to the `ffmpeg` path in your system.
 
-6. Install `v4l2loopback` following the [official instructions](https://github.com/umlaeute/v4l2loopback).
+6. [For System] Install `v4l2loopback` following the [official instructions](https://github.com/umlaeute/v4l2loopback).
    
    Make sure to enable it before running the LiVSec system.
    ```shell
@@ -117,7 +117,8 @@ If you change it, you should also
 change `--data_path` argument every time you call the models (either the face authentication model or the protected
 face generation model).
 
-Dataset #2 comes from `System/John_3dts.mp4`. No additional actions are needed for Dataset #2 since they are all included.
+The 3D video in Dataset #2 is exported from Depthkit (See Appendix section of this doc for more details).
+We provide the exported video we use in this project, which is `System/John_3dts.mp4`. No additional actions are needed for Dataset #2 since they are all included.
 
 ### Results for Dataset #1
 
@@ -125,11 +126,17 @@ Run `result_collect.py` under `ProtectedFaceGeneration` folder. The output will 
 
 ### Results for Dataset #2
 
-Run `main.py` under `System` folder. The output will show all the results.
+Run `main.py` under `System` folder. The output will show all the results in `REUSE-1` mode.
 
-Please note that the `MODE` in Line 27 has to be set as `RESULT_COLLECT_MODE`.
+Change Line 28 of `main.py` to the designated reuse frequency, e.g., 5 or 10, which was used in the paper, to produce 
+corresponding results.
 
-## 3. Train Your Own Models
+Please note that to see the results, the `MODE` in Line 27 has to be set as `RESULT_COLLECT_MODE`.
+
+## 3. [Optional] Train Your Own Models
+
+See the 7th step of `Environmental Setup` to download the pretrained models. You can also train your own face authentication and 
+protected face generation models.
 
 You should follow `Prepare datasets` section above to prepare the datasets first.
 
@@ -144,19 +151,105 @@ Change Line 21 of `ProtectedFaceGeneration/main_module.py` to your own face auth
 
 Run `train.py` under `ProtectedFaceGeneration` folder. If you want to change the training hyper-parameters, check Line 43-59 of the `train.py`.
 
-## 4. The End-to-end Security-preserving Live 3D Video Surveillance System
+## 4. [Optional] The End-to-end Security-preserving Live 3D Video Surveillance System
 
-## 5. Cite Our Work
+The protected frames will be sent to the virtual camera `/dev/video0`. Any end-to-end live streaming protocols can be 
+adopted to build the live streaming system. In this project, we use `DashCast` to generate a live DASH stream 
+from it at the server end, and use `MP4Client` to watch the playback at the client end.
+
+### Server-end configuration
+
+The code under `System` folder runs on the server-end, so you should do the following at the server end.
+
+1. Install `DashCast` (included in the `GPAC 0.8.1`). Find more versions about `GPAC 0.8.1` from [this page](https://gpac.wp.imt.fr/downloads/gpac-legacy-builds/).
+   ```shell
+   wget https://download.tsi.telecom-paristech.fr/gpac/legacy_builds/linux64/gpac/gpac_0.8.1-latest-legacy_amd64.deb
+   sudo apt install ./gpac_0.8.1-latest-legacy_amd64.deb
+   ```
+
+2. Install `Node.js`. We recommand use tools like `nvs` to easily install and manage `Node.js`.
+   See [official documentation](https://github.com/jasongin/nvs) of `nvs` for more information.
+   ```shell
+   # install nvs
+   export NVS_HOME="$HOME/.nvs"
+   git clone https://github.com/jasongin/nvs "$NVS_HOME"
+   . "$NVS_HOME/nvs.sh" install
+   
+   # add LTS version of the node
+   nvs add lts
+   ```
+
+3. Download the DASH Low Latency Web Server.
+   ```shell
+   git clone https://github.com/gpac/node-gpac-dash
+   cd node-gpac-dash && mkdir livsec
+   ```
+   We assume the path of the web server is `<YOUR_PATH>/node-gpac-dash`. 
+   Change Line 34 of `Server/main.py` to `<YOUR_PATH>/node-gpac-dash/livsec`.
+
+4. Start DASH streaming.
+   We provide two types of DASH, the default one and the low-latency one. Start the corresponding DASH server.
+
+   ```shell
+   cd <YOUR_PATH>/node-gpac-dash
+   nvs use lts  # enable node
+   
+   # for default DASH
+   node gpac-dash.js
+   
+   # for low latency DASH
+   node gpac-dash.js -segment-marker eods -chunk-media-segments
+   ```
+   
+   Change the `DASH_MODE` parameter in Line 33 of `System/main.py` to switch the DASH streaming mode. 
+   You also need to change Line 27 of it to `STREAMING_MODE` to disable the result collection.
+   Finally, run `main.py`, and the DASH profiles/segments generation will start automatically. You can check the generated
+   DASH files in `<YOUR_PATH>/node-gpac-dash/livsec/output`.
+
+### Client-end configuration
+
+1. Install `MP4Client` by installing `GPAC 0.8.1` following the aforementioned steps.
+2. Watch the playback.
+   ```shell
+   # default DASH
+   MP4Client http://localhost:8000/livsec/output/manifest.mpd
+   
+   # low latency DASH
+   MP4Client http://127.0.0.1:8000/livsec/output/dashcast.mpd -opt Network:BufferLength=200 -opt DASH:LowLatency=chunk -opt DASH:UseServerUTC=no
+   ```
+
+### Known issues
+
+For both DASH streaming modes, the streaming is not smooth. And in the low-latency mode, there is a distortion at the 
+client end. We will keep working on this and provide updates in this GitHub repo.
+
+## 5. Appendix 
+
+### How to get Dataset #2
+1. Get a Depthkit account at https://www.depthkit.tv/signup.
+2. Log in and download Depthkit (as of the paper submission, the version is 0.6.1), and the Sample Project for Depthkit Core (which contains a pre-shot volumetric video) at https://www.depthkit.tv/downloads.
+3. Install Depthkit and unzip the Sample Project for Depthkit Core. Use Depthkit to open the sample project.
+4. Click the Editor button (it looks like a film) in the upper-left corner of the window to begin editing the sample project.
+5. Select the ISOLATE tab, and change Depth Range to the range of 1.27m to 2.37m. This step filters foreground and background.
+6. Change all numbers for Horizontal Crop and Vertical Crop to 0px. 
+7. Use the two selectors (look like label icons) in the lower-right of the window to select the video clip with the length you desire.
+8. Go to the EXPORT tab, and set the Output Width and Output Height to 2048. 
+9. Click the EXPORT button, and you will get an RGBD video similar to Figure 5 in the paper.
+
+Please note that, while conducting the experiments for this paper, we used an older version of Depthkit (around late 2019 or early 2020) to edit and export the RGBD video. Now the newest version of Depthkit cannot generate the same RGBD video clip. For example, in Step 8, when using the current version of Depthkit, the Output Width and Output Height can only be set to 1920 and 2160, respectively.
+
+
+## 6. Cite Our Work
 
 Zhongze Tang, Huy Phan, Xianglong Feng, Bo Yuan, Yao Liu, and Sheng Wei. 2023. 
 Security-Preserving Live 3D Video Surveillance. 
 In Proceedings of the 14th ACM Multimedia Systems Conference (MMSys ’23), June 2023. 
 https://doi.org/10.1145/3587819.3590975
 
-## 6. Contact
+## 7. Contact
 
 If you have any questions or any idea to discuss, you can email Zhongze Tang (zhongze.tang@rutgers.edu) directly.
 
-## License
+## 8. License
 
 MIT
