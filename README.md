@@ -1,4 +1,4 @@
-# LiVSec
+# LiVSec - MMSys'23
 
 In the `LiVSec` project, we developed 1) a 3D face authentication system, 2) a generative model which generates 
 perturbations that can prevent the face models from being exploited to bypass DL-based face authentications while
