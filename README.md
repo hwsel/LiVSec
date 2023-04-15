@@ -109,7 +109,7 @@ the output will be `video0`. Refer to its official documentation for more detail
 
 ### Prepare datasets
 
-Run `preprocess_data.py` under `FaceAuthentication/utils` to download and preprocess Dataset #1. 
+Dataset #1 comes from https://vap.aau.dk/rgb-d-face-database/. Run `preprocess_data.py` under `FaceAuthentication/utils` to download and preprocess Dataset #1. 
 
 If you want to change where to put the dataset, change Line 126 of `preprocess_data.py`.
 The default is `/data/faceid`.
