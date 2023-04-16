@@ -1,9 +1,9 @@
 # LiVSec - MMSys'23
 
-In the `LiVSec` project, we developed 1) a 3D face authentication system, 2) a generative model which generates 
-perturbations that can prevent the face models from being exploited to bypass DL-based face authentications while
-maintaining the required quality and functionality of the 3D video surveillance, and 3) an end-to-end security-preserving
-live 3D video surveillance system.
+The LiVSec project contains 3 components:
+1) a deep learning-based 3D face authentication system;
+2) a perturbation generator that can generate real-time perturbations to prevent the face models in the surveillance video from being exploited to spoof the face authentication, while maintaining the required quality and functionality of the 3D video surveillance; and
+3) an end-to-end security-preserving live 3D video surveillance system integrating the perturbation generator.
 
 The details of this project can be found in our MMSys'23 paper:
 
@@ -13,6 +13,12 @@ In Proceedings of the 14th ACM Multimedia Systems Conference (MMSys ’23), June
 https://doi.org/10.1145/3587819.3590975
 
 The paper can be found under the `paper` folder.
+
+This repo contains both code and instructions for the following three components:
+
+1. Reproduce the experimental results reported in the paper.
+2. Train your own 3D face authentication model and the real-time perturbation generator.
+3. Set up the end-to-end security-preserving live 3D video surveillance system integrating the perturbation generator.
 
 ## Repository Hierarchy
 
