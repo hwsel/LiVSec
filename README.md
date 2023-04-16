@@ -1,11 +1,10 @@
 # LiVSec - MMSys'23
 
-The LiVSec project contains 3 components:
-1) a deep learning-based 3D face authentication system;
-2) a perturbation generator that can generate real-time perturbations to prevent the face models in the surveillance video from being exploited to spoof the face authentication, while maintaining the required quality and functionality of the 3D video surveillance; and
-3) an end-to-end security-preserving live 3D video surveillance system integrating the perturbation generator.
-
-The details of this project can be found in our MMSys'23 paper:
+In the *LiVSec* project, to defend against the face spoofing attacks that face authentication systems can be effectively 
+compromised by the 3D face models presented in the 3D surveillance video, 
+we propose to proactively and benignly inject adversarial perturbations to the surveillance video in real time,
+which prevents the face models from being exploited to bypass deep learning-based face authentications while maintaining
+the required quality and functionality of the 3D video surveillance. The details of this project can be found in our MMSys'23 paper:
 
 Zhongze Tang, Huy Phan, Xianglong Feng, Bo Yuan, Yao Liu, and Sheng Wei. 2023. 
 Security-Preserving Live 3D Video Surveillance. 
@@ -17,7 +16,7 @@ The paper can be found under the `paper` folder.
 This repo contains both code and instructions for the following three components:
 
 1. Reproduce the experimental results reported in the paper.
-2. Train your own 3D face authentication model and the real-time perturbation generator.
+2. Train your own 3D face authentication model and the real-time perturbation generator to prevent the face models in the surveillance video from being exploited to spoof the face authentication.
 3. Set up the end-to-end security-preserving live 3D video surveillance system integrating the perturbation generator.
 
 ## Repository Hierarchy
@@ -34,6 +33,7 @@ This repo contains both code and instructions for the following three components
 ...
 ├── paper
 ├── LICENSE
+├── LiVSec_MMSys23_ReproducibilityAppendix.pdf
 └── README.md
 
 ```
