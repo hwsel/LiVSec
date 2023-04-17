@@ -1,6 +1,6 @@
 # LiVSec - MMSys'23
 
-The *LiVSec* project aims to investigate the security implications of live 3D video surveillance. We identified the security vulnerabilities caused by the 3D sensitive objects (e.g., human face) in the surveillance video that lead to spoofing attacks. To address the security issue, we developed a novel perturbation generation method, namely \emph{LiVSec}, which employs a real-time generative neural network model to inject small perturbations to the 3D video frames to blur and protect the sensitive objects. 
+The *LiVSec* project aims to investigate the security implications of live 3D video surveillance. We identified the security vulnerabilities caused by the 3D sensitive objects (e.g., human face) in the surveillance video that lead to spoofing attacks. To address the security issue, we developed a novel perturbation generation method, namely *LiVSec*, which employs a real-time generative neural network model to inject small perturbations to the 3D video frames to blur and protect the sensitive objects.
 
 The details of this project can be found in our accepted MMSys'23 paper:
 
