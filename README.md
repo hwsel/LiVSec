@@ -1,10 +1,8 @@
 # LiVSec - MMSys'23
 
-In the *LiVSec* project, to defend against the face spoofing attacks that face authentication systems can be effectively 
-compromised by the 3D face models presented in the 3D surveillance video, 
-we propose to proactively and benignly inject adversarial perturbations to the surveillance video in real time,
-which prevents the face models from being exploited to bypass deep learning-based face authentications while maintaining
-the required quality and functionality of the 3D video surveillance. The details of this project can be found in our MMSys'23 paper:
+The *LiVSec* project aims to investigate the security implications of live 3D video surveillance. We identified the security vulnerabilities caused by the 3D sensitive objects (e.g., human face) in the surveillance video that lead to spoofing attacks. To address the security issue, we developed a novel perturbation generation method, namely \emph{LiVSec}, which employs a real-time generative neural network model to inject small perturbations to the 3D video frames to blur and protect the sensitive objects. 
+
+The details of this project can be found in our accepted MMSys'23 paper:
 
 Zhongze Tang, Huy Phan, Xianglong Feng, Bo Yuan, Yao Liu, and Sheng Wei. 2023. 
 Security-Preserving Live 3D Video Surveillance. 
